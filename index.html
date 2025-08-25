@@ -1,54 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CS 59300-RL1: Reinforcement Learning</title>
     <style>
+        :root {
+            --bg: #f5f7fa;
+            --primary: #2a304c;
+            --accent: #0d62a6;
+            --text: #222;
+            --card: #ffffff;
+            --border: #d8dde6;
+        }
+        * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
         }
         header {
-            background-color: rgb(42, 48, 76);
-            color: white;
-            padding: 9px;
+            background: var(--primary);
+            color: #fff;
+            padding: 1.2rem 1rem 1.6rem;
             text-align: center;
         }
-        header small {
-            display: block;
-            font-size: 1.1em;
-            color: #ccc;
+        header h1 { margin: .2rem 0 .4rem; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+        header small { font-size: 1.05rem; color: #d0d7e5; }
+        nav {
+            background: #1d2236;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .5rem 1rem;
+            padding: .55rem 1rem .7rem;
         }
-        section {
-            margin: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #003366;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        a {
-            color: #003366;
+        nav a {
+            color: #e3e9f4;
             text-decoration: none;
+            font-size: .9rem;
+            padding: .35rem .7rem;
+            border-radius: 4px;
+            transition: background .2s;
         }
-        a:hover {
-            text-decoration: underline;
+        nav a:hover, nav a:focus { background: rgba(255,255,255,0.12); }
+        main { max-width: 1200px; margin: 1.25rem auto 2.5rem; padding: 0 1.1rem; }
+        section {
+            background: var(--card);
+            padding: 1.15rem 1.2rem 1.4rem;
+            margin-bottom: 1.1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        section h2 { margin-top: 0; color: var(--accent); font-size: 1.35rem; }
+        a { color: var(--accent); }
+        a:hover { text-decoration: underline; }
+        ul, ol { margin: .5rem 0 .75rem 1.25rem; }
+        li { margin: .25rem 0; }
+        .two-col-info { display: grid; gap: .4rem .8rem; grid-template-columns: 190px 1fr; font-size: .98rem; }
+        .two-col-info div.label { font-weight: 600; }
+        .note { font-size: .9rem; color: #444; background: #f0f5fa; border-left: 4px solid var(--accent); padding: .55rem .75rem; margin-top: .6rem; }
+        table.schedule { width:100%; border-collapse: collapse; font-size: .88rem; }
+        table.schedule th, table.schedule td { border:1px solid var(--border); padding:.55rem .5rem; vertical-align: top; }
+        table.schedule th { background:#eef3f8; text-align:left; }
+        table.schedule tbody tr:nth-child(even) { background:#fafcff; }
+        table.schedule th:first-child,
+        table.schedule td:first-child { width: 50px; }
+        table.schedule th:nth-child(2),
+        table.schedule th:nth-child(3),
+        table.schedule td:nth-child(2),
+        table.schedule td:nth-child(3) { width: 1%; }
+        table.schedule { table-layout: fixed; }
+        table.schedule th:nth-child(2),
+        table.schedule th:nth-child(3),
+        table.schedule td:nth-child(2),
+        table.schedule td:nth-child(3) { width: 50%; }
+        footer { text-align:center; font-size:.75rem; color:#666; margin: 2rem 0 1rem; }
+        /* Added color-coding for schedule cells */
+        table.schedule td:not(:first-child) { background:#d9ecff; } /* default blue */
+        table.schedule td.topic-purple { background:#d9c4ff !important; }
+        table.schedule td.topic-red { background:#ffc9c9 !important; }
+        table.schedule td.topic-green { background:#c9f5d5 !important; }
+        /* Ensure mobile cards keep coloring */
+        @media (max-width: 760px) {
+            .two-col-info { grid-template-columns: 1fr; }
+            nav { justify-content: flex-start; }
+            table.schedule thead { display:none; }
+            table.schedule, table.schedule tbody, table.schedule tr, table.schedule td { display:block; width:100%; }
+            table.schedule tr { margin:0 0 .85rem; border:1px solid var(--border); border-radius:6px; padding:.4rem .55rem; background:#fff; }
+            table.schedule td { border:none; padding:.3rem .15rem; }
+            table.schedule td::before { content: attr(data-label) ": "; font-weight:600; }
         }
     </style>
 </head>
@@ -57,64 +101,153 @@
         <h1>CS 59300-RL1: Reinforcement Learning</h1>
         <small>Fall 2025</small>
     </header>
+    <nav aria-label="Section navigation">
+        <a href="#info">Info</a>
+        <a href="#description">Description</a>
+        <a href="#outcomes">Outcomes</a>
+        <a href="#topics">Topics</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#grading">Grading</a>
+        <a href="#integrity">Integrity</a>
+        <a href="#resources">Resources</a>
+    </nav>
+    <main>
+        <section id="info">
+            <h2>Course Information</h2>
+            <div class="two-col-info" aria-describedby="email-note">
+                <div class="label">Lecture:</div><div>10:30–11:45 AM (T/Th), LWSN 1106</div>
+                <div class="label">Semester:</div><div>Fall 2025</div>
+                <div class="label">Instructor:</div><div>Joseph Campbell</div>
+                <div class="label">Instructor Email:</div><div>joecamp@purdue.edu <span id="email-note" class="note" style="display:block;margin:.35rem 0 0;">Please put <strong>[593RL]</strong> in the subject header or your email may be missed.</span></div>
+                <div class="label">Instructor Office Hours:</div><div>Friday 12:00–1:00 PM (DSAI 3047) or by appointment</div>
+                <div class="label">Teaching Assistant:</div><div>Guven Gergerli</div>
+                <div class="label">TA Email:</div><div>ggergerl@purdue.edu</div>
+                <div class="label">TA Office Hours:</div><div>Wednesday 11:30–12:30 PM (DSAI B063)</div>
+            </div>
+        </section>
 
-    <section>
-        <h2>Course Information</h2>
-        <p><strong>Meeting Time:</strong></p>
-        <p>Tuesdays & Thursdays, 10:30 AM – 11:45 AM, LWSN 1106</p>
-        <p><strong>Instructor:</strong> </p>
-        <p> Joseph Campbell </p>
-        <p> Email: joecamp@purdue.edu </p>
-        <p> Office Hours: x 1–3 PM (DSAI 3061)</p>
-        <p><strong>Teaching Assistant:</strong> </p>
-        <p> Guven Gergerli </p>
-        <p> Email: ggergerl@purdue.edu </p>
-        <p> Office Hours: Thu 11 AM–12 PM (remote)</p>
-        <p> Zoom link </p>
-    </section>
+        <section id="description">
+            <h2>Course Description</h2>
+            <p>
+            The ability to autonomously acquire skills is a hallmark of an intelligent agent. This can be achieved 
+            through a machine learning paradigm known as reinforcement learning, in which an agent learns by 
+            repeatedly interacting with an environment. This course will explore topics related to reinforcement 
+            learning, including deep reinforcement learning, model-based and model-free learning, intrinsically 
+            motivated learning, applications, and open challenges.</p>
+            <p>
+            This course is structured to introduce methods and research topics in reinforcement learning. It 
+            consists of lectures, homework assignments, a midterm exam, and a course project. You will be 
+            expected to work in small groups to formulate and carry out a short-term research project related to 
+            reinforcement learning.
+            </p>
+            <h2>Prerequisites</h2>
+            <ul>
+                <li>Basic proficiency in Python (experience with PyTorch recommended but not required)</li>
+                <li>Introductory knowledge of machine learning and linear algebra</li>
+            </ul>
 
-    <section>
-        <h2>Syllabus</h2>
-        <p>This course covers the fundamentals of reinforcement learning, including MDPs, value functions, policy gradients, and deep RL methods. Prerequisites: basic probability, linear algebra, and Python programming.</p>
-        <p>25% Midterm</a></p>
-    </section>
+        </section>
 
-    <section>
-        <h2>Schedule</h2>
-        <table>
-            <tr>
-                <th>Week</th>
-                <th>Date</th>
-                <th>Topic</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>Aug 28</td>
-                <td>Introduction to RL</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Sep 4</td>
-                <td>Markov Decision Processes</td>
-            </tr>
-        </table>
-    </section>
+        <section id="outcomes">
+            <h2>Learning Outcomes</h2>
+            Upon successful completion of this course, students will be able to: 
+            <ol>
+                <li>Understand how agents can acquire skills through reinforcement learning.</li>
+                <li>Know the strengths and weaknesses of various classes of reinforcement learning 
+algorithms and understand how they can be applied to real-world problems.</li>
+                <li>Implement and evaluate various reinforcement learning algorithms.</li>
+                <li>Clearly articulate and present project findings.</li>
+            </ol>
 
-    <section>
-        <h2>Lectures</h2>
-        <ul>
-            <li><a href="#">Week 1 - Lecture 1 Recording</a></li>
-            <li><a href="#">Week 1 - Lecture 2 Recording</a></li>
-        </ul>
-    </section>
+        </section>
 
-    <section>
-        <h2>Homework</h2>
-        <ul>
-            <li><a href="#">Homework 1</a></li>
-            <li><a href="#">Homework 2</a></li>
-        </ul>
-    </section>
+        <section id="topics">
+            <h2>Course Topics (Tentative)</h2>
+            <ul>
+            <li><strong>Introduction to reinforcement learning:</strong> Markov Decision Processes, multi-armed bandits, exploration-exploitation trade-off</li>
+            <li><strong>Dynamic programming:</strong> policy and value iteration</li>
+            <li><strong>Monte Carlo and temporal difference learning:</strong> SARSA, Q-learning, on-policy and off-policy learning</li>
+            <li><strong>Policy gradient methods:</strong> REINFORCE, actor-critic methods</li>
+            <li><strong>Model-based reinforcement learning</strong></li>
+            <li><strong>Offline reinforcement learning</strong></li>
+            <li><strong>Intelligent exploration and reward-free learning</strong></li>
+            <li><strong>Applications and challenges:</strong> robotics, language, sim-to-real, value alignment</li>
+            </ul>
+        </section>
+
+        <section id="schedule">
+            <h2>Schedule (Tentative)</h2>
+            <table class="schedule" aria-describedby="schedule-note">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">Week</th>
+                        <th style="width:150px;">Tuesday</th>
+                        <th>Thursday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td data-label="Week">1</td><td data-label="Tuesday">8/26 Introduction to RL</td><td data-label="Thursday">8/28 Deep Learning Basics &amp; Behavior Cloning</td></tr>
+                    <tr><td>2</td><td>9/2 Multi-Armed Bandits &amp; Markov Decision Proc.</td><td>9/4 Policy / Value Iteration</td></tr>
+                    <tr><td>3</td><td>9/9 Temporal Difference Learning</td><td>9/11 Deep Q Learning</td></tr>
+                    <tr><td>4</td><td>9/16 Deep Q Learning</td><td>9/18 Policy Gradient</td></tr>
+                    <tr><td>5</td><td>9/23 Actor-Critic Methods</td><td>9/25 Actor-Critic Methods</td></tr>
+                    <tr><td>6</td><td>9/30 Model-Based RL</td><td>10/2 Model-Based RL</td></tr>
+                    <tr><td>7</td><td class="topic-purple">10/7 Guest Talk</td><td>10/9 RL Framework Tutorial</td></tr>
+                    <tr><td>8</td><td class="topic-red">10/14 No Class (Fall Break)</td><td>10/16 Monte Carlo Tree Search</td></tr>
+                    <tr><td>9</td><td>10/21 Multi-Agent RL</td><td>10/23 Multi-Agent RL</td></tr>
+                    <tr><td>10</td><td class="topic-purple">10/28 Guest Talk</td><td>10/30 Inverse Reinforcement Learning</td></tr>
+                    <tr><td>11</td><td>11/4 Offline Reinforcement Learning</td><td>11/6 Intelligent Exploration &amp; Curiosity</td></tr>
+                    <tr><td>12</td><td>11/11 Intelligent Exploration &amp; Curiosity</td><td>11/13 Transfer &amp; Lifelong Learning</td></tr>
+                    <tr><td>13</td><td class="topic-purple">11/18 Good Presentation Tips</td><td>11/20 Large Language Models</td></tr>
+                    <tr><td>14</td><td>11/25 Vision Language Models</td><td class="topic-red">11/27 No Class (Thanksgiving)</td></tr>
+                    <tr><td>15</td><td>12/2 Robotics &amp; Sim-to-Real</td><td>12/4 Challenges &amp; Open Problems</td></tr>
+                    <tr><td>16</td><td class="topic-green">12/9 Poster Presentations</td><td class="topic-green">12/11 Poster Presentations</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="grading">
+            <h2>Grading</h2>
+            <ul>
+                <li>Assignments (individual): 40% (4 × 10%)</li>
+                <li>Midterm exam: 15%</li>
+                <li>Course project (group): 40%
+                    <ul>
+                        <li>Midterm update: 10%</li>
+                        <li>Project report (plus deliverables): 20%</li>
+                        <li>Poster presentation: 10%</li>
+                    </ul>
+                </li>
+                <li>Class participation: 5%</li>
+            </ul>
+        </section>
+
+        <section id="integrity">
+            <h2>Academic Integrity</h2>
+            <p>Academic integrity is one of the highest values held by Purdue University. Individuals are encouraged to alert university officials to potential breaches of this value by emailing <a href="mailto:integrity@purdue.edu">integrity@purdue.edu</a> or calling 765-494-8778. While information may be submitted anonymously, more detail enables a more thorough investigation. See University Policies and Statements (on Brightspace) for more information.</p>
+        </section>
+
+        <section id="resources">
+            <h2>Additional Resources</h2>
+            <ul>
+                <li><a href="http://incompleteideas.net/book/the-book-2nd.html" target="_blank" rel="noopener">Reinforcement Learning: An Introduction (Sutton &amp; Barto)</a></li>
+                <li><a href="https://cmudeeprl.github.io/403website_s24/" target="_blank" rel="noopener">CMU 10-403: Deep Reinforcement Learning</a></li>
+                <li><a href="https://rail.eecs.berkeley.edu/deeprlcourse/" target="_blank" rel="noopener">UC Berkeley CS 285: Deep Reinforcement Learning</a></li>
+                <li><a href="https://web.stanford.edu/class/cs234/" target="_blank" rel="noopener">Stanford CS234: Reinforcement Learning</a></li>
+                <li><a href="https://web.mit.edu/6.7950/www/index.html" target="_blank" rel="noopener">MIT 6.7950: Reinforcement Learning: Foundations &amp; Methods</a></li>
+                <li><a href="https://www.davidsilver.uk/teaching/" target="_blank" rel="noopener">UCL (David Silver) Reinforcement Learning</a></li>
+            </ul>
+            <p class="note">The instructor may revise this syllabus as needed. Changes will be communicated to students in a timely manner.</p>
+        </section>
+
+        <section id="placeholders">
+            <h2>Lectures &amp; Homework (Links TBD)</h2>
+            <ul>
+                <li>Lecture recordings will be posted here.</li>
+                <li>Homework assignments will be linked as they are released.</li>
+            </ul>
+        </section>
+    </main>
 
 </body>
 </html>
