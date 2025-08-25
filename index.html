@@ -20,6 +20,7 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.5;
+            /* Removed fixed min-width so layout can shrink on mobile; table will scroll horizontally instead */
         }
         header {
             background: var(--primary);
@@ -84,15 +85,19 @@
         table.schedule td.topic-purple { background:#d9c4ff !important; }
         table.schedule td.topic-red { background:#ffc9c9 !important; }
         table.schedule td.topic-green { background:#c9f5d5 !important; }
-        /* Ensure mobile cards keep coloring */
+        
+        /* Responsive adjustments */
         @media (max-width: 760px) {
             .two-col-info { grid-template-columns: 1fr; }
             nav { justify-content: flex-start; }
-            table.schedule thead { display:none; }
-            table.schedule, table.schedule tbody, table.schedule tr, table.schedule td { display:block; width:100%; }
-            table.schedule tr { margin:0 0 .85rem; border:1px solid var(--border); border-radius:6px; padding:.4rem .55rem; background:#fff; }
-            table.schedule td { border:none; padding:.3rem .15rem; }
-            table.schedule td::before { content: attr(data-label) ": "; font-weight:600; }
+            /* Keep table structure; enable horizontal scroll container */
+            .schedule-responsive-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            table.schedule { min-width: 650px; }
+        }
+        /* Removed former collapse-to-cards at <=560px to retain full table view on mobile */
+        @media (max-width: 560px) {
+            table.schedule { font-size: .8rem; }
+            table.schedule th, table.schedule td { padding: .45rem .4rem; }
         }
     </style>
 </head>
@@ -177,33 +182,35 @@ algorithms and understand how they can be applied to real-world problems.</li>
 
         <section id="schedule">
             <h2>Schedule (Tentative)</h2>
-            <table class="schedule" aria-describedby="schedule-note">
-                <thead>
-                    <tr>
-                        <th style="width:50px;">Week</th>
-                        <th style="width:150px;">Tuesday</th>
-                        <th>Thursday</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td data-label="Week">1</td><td data-label="Tuesday">8/26 Introduction to RL</td><td data-label="Thursday">8/28 Deep Learning Basics &amp; Behavior Cloning</td></tr>
-                    <tr><td>2</td><td>9/2 Multi-Armed Bandits &amp; Markov Decision Proc.</td><td>9/4 Policy / Value Iteration</td></tr>
-                    <tr><td>3</td><td>9/9 Temporal Difference Learning</td><td>9/11 Deep Q Learning</td></tr>
-                    <tr><td>4</td><td>9/16 Deep Q Learning</td><td>9/18 Policy Gradient</td></tr>
-                    <tr><td>5</td><td>9/23 Actor-Critic Methods</td><td>9/25 Actor-Critic Methods</td></tr>
-                    <tr><td>6</td><td>9/30 Model-Based RL</td><td>10/2 Model-Based RL</td></tr>
-                    <tr><td>7</td><td class="topic-purple">10/7 Guest Talk</td><td>10/9 RL Framework Tutorial</td></tr>
-                    <tr><td>8</td><td class="topic-red">10/14 No Class (Fall Break)</td><td>10/16 Monte Carlo Tree Search</td></tr>
-                    <tr><td>9</td><td>10/21 Multi-Agent RL</td><td>10/23 Multi-Agent RL</td></tr>
-                    <tr><td>10</td><td class="topic-purple">10/28 Guest Talk</td><td>10/30 Inverse Reinforcement Learning</td></tr>
-                    <tr><td>11</td><td>11/4 Offline Reinforcement Learning</td><td>11/6 Intelligent Exploration &amp; Curiosity</td></tr>
-                    <tr><td>12</td><td>11/11 Intelligent Exploration &amp; Curiosity</td><td>11/13 Transfer &amp; Lifelong Learning</td></tr>
-                    <tr><td>13</td><td class="topic-purple">11/18 Good Presentation Tips</td><td>11/20 Large Language Models</td></tr>
-                    <tr><td>14</td><td>11/25 Vision Language Models</td><td class="topic-red">11/27 No Class (Thanksgiving)</td></tr>
-                    <tr><td>15</td><td>12/2 Robotics &amp; Sim-to-Real</td><td>12/4 Challenges &amp; Open Problems</td></tr>
-                    <tr><td>16</td><td class="topic-green">12/9 Poster Presentations</td><td class="topic-green">12/11 Poster Presentations</td></tr>
-                </tbody>
-            </table>
+            <div class="schedule-responsive-wrapper">
+                <table class="schedule" aria-describedby="schedule-note">
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">Week</th>
+                            <th style="width:150px;">Tuesday</th>
+                            <th>Thursday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td data-label="Week">1</td><td data-label="Tuesday">8/26 Introduction to RL</td><td data-label="Thursday">8/28 Deep Learning Basics &amp; Behavior Cloning</td></tr>
+                        <tr><td>2</td><td>9/2 Multi-Armed Bandits &amp; Markov Decision Proc.</td><td>9/4 Policy / Value Iteration</td></tr>
+                        <tr><td>3</td><td>9/9 Temporal Difference Learning</td><td>9/11 Deep Q Learning</td></tr>
+                        <tr><td>4</td><td>9/16 Deep Q Learning</td><td>9/18 Policy Gradient</td></tr>
+                        <tr><td>5</td><td>9/23 Actor-Critic Methods</td><td>9/25 Actor-Critic Methods</td></tr>
+                        <tr><td>6</td><td>9/30 Model-Based RL</td><td>10/2 Model-Based RL</td></tr>
+                        <tr><td>7</td><td class="topic-purple">10/7 Guest Talk</td><td>10/9 RL Framework Tutorial</td></tr>
+                        <tr><td>8</td><td class="topic-red">10/14 No Class (Fall Break)</td><td>10/16 Monte Carlo Tree Search</td></tr>
+                        <tr><td>9</td><td>10/21 Multi-Agent RL</td><td>10/23 Multi-Agent RL</td></tr>
+                        <tr><td>10</td><td class="topic-purple">10/28 Guest Talk</td><td>10/30 Inverse Reinforcement Learning</td></tr>
+                        <tr><td>11</td><td>11/4 Offline Reinforcement Learning</td><td>11/6 Intelligent Exploration &amp; Curiosity</td></tr>
+                        <tr><td>12</td><td>11/11 Intelligent Exploration &amp; Curiosity</td><td>11/13 Transfer &amp; Lifelong Learning</td></tr>
+                        <tr><td>13</td><td class="topic-purple">11/18 Good Presentation Tips</td><td>11/20 Large Language Models</td></tr>
+                        <tr><td>14</td><td>11/25 Vision Language Models</td><td class="topic-red">11/27 No Class (Thanksgiving)</td></tr>
+                        <tr><td>15</td><td>12/2 Robotics &amp; Sim-to-Real</td><td>12/4 Challenges &amp; Open Problems</td></tr>
+                        <tr><td>16</td><td class="topic-green">12/9 Poster Presentations</td><td class="topic-green">12/11 Poster Presentations</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section id="grading">
